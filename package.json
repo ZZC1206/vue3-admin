@@ -7,7 +7,7 @@
     "dev": "vite --open",
     "build": "npm run tsc && vite build",
     "serve": "vite preview",
-    "lint": "eslint ./src/**/*.{js,jsx,vue,ts,tsx} --fix",
+    "lint": "eslint \"src/**/*.{ts,tsx,vue,js,jsx}\" --fix",
     "prepare": "husky install",
     "tsc": "vue-tsc -noEmit"
   },

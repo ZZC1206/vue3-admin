@@ -10,19 +10,24 @@ module.exports = {
     es2021: true
   },
   extends: [
-    'plugin:vue/vue3-essential',
+    'plugin:vue/vue3-strongly-recommended',
+    // 'plugin:vue/vue3-essential',
     'standard-with-typescript'
   ],
   overrides: [
   ],
   parserOptions: {
     ecmaVersion: 'latest',
-    sourceType: 'module'
+    sourceType: 'module',
+    project: './tsconfig.json'
   },
   plugins: [
     'vue'
   ],
   rules: {
-    indent: ['error', 2]
+    indent: ['off', 2],
+    'no-var': 'error',
+    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
   }
 }
