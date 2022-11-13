@@ -14,7 +14,16 @@
       "DOM"
     ],
     "skipLibCheck": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "baseUrl": "./",
+    "types": [
+      "unplugin-vue-macros/macros-global"
+    ]
   },
   "include": [
     "src/**/*.ts",
