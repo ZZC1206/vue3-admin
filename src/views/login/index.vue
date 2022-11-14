@@ -102,6 +102,7 @@
 import { ref, reactive } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
 import { FormInstance, FormRules } from 'element-plus'
+import { validateEmail, validatePassword, validateCode } from '@/utils/validate'
 defineOptions({
   name: 'Login'
 })
@@ -118,11 +119,9 @@ const userForm = reactive({
 
 /** 用户名校验规则 */
 const checkUserName = (rule: any, value: any, callback: any) => {
-  // eslint-disable-next-line no-useless-escape
-  const regEmail = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/
   if (!value) {
-    return callback(new Error('请输入帐号'))
-  } else if (!regEmail.test(value)) {
+    return callback(new Error('帐号不能为空'))
+  } else if (!validateEmail(value)) {
     return callback(new Error('邮箱格式不正确'))
   } else {
     return callback()
@@ -131,11 +130,10 @@ const checkUserName = (rule: any, value: any, callback: any) => {
 
 /** 密码校验规则 */
 const checkPassword = (rule: any, value: any, callback: any) => {
-  const regPassword = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/
   if (!value) {
-    return callback(new Error('请输入密码'))
-  } else if (!regPassword.test(value)) {
-    return callback(new Error('密码必须6~20位，包含数字、字母'))
+    return callback(new Error('密码不能为空'))
+  } else if (!validatePassword(value)) {
+    return callback(new Error('密码必须6~20位，包含数字和字母'))
   } else {
     return callback()
   }
@@ -143,12 +141,11 @@ const checkPassword = (rule: any, value: any, callback: any) => {
 
 /** 密码二次名校验规则 */
 const checkPasswordTwice = (rule: any, value: any, callback: any) => {
-  const regPassword = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/
   const password = userForm.password
   if (!value) {
-    return callback(new Error('请输入密码'))
-  } else if (!regPassword.test(value)) {
-    return callback(new Error('密码必须6~20位，包含数字、字母'))
+    return callback(new Error('密码不能为空'))
+  } else if (!validatePassword(value)) {
+    return callback(new Error('密码必须6~20位，包含数字和字母'))
   } else if (password && password !== value) {
     return callback(new Error('两次密码不一致'))
   } else {
@@ -158,11 +155,10 @@ const checkPasswordTwice = (rule: any, value: any, callback: any) => {
 
 /** 验证码校验规则 */
 const checkCode = (rule: any, value: any, callback: any) => {
-   const regCode = /^[a-z0-9]{6}$/
   if (!value) {
-    return callback(new Error('请输入验证码'))
+    return callback(new Error('验证码不能为空'))
   }
-  if (!regCode.test(value)) {
+  if (!validateCode(value)) {
     callback(new Error('验证码为6位'))
   } else {
     callback()
@@ -173,20 +169,15 @@ const checkCode = (rule: any, value: any, callback: any) => {
 const userRules = reactive<FormRules>({
   userName: [
     { validator: checkUserName, trigger: 'blur' }
-    // { required: true, message: '请输入帐号', trigger: 'blur' },
-    // { min: 3, max: 5, message: '帐号必须3~5位', trigger: 'blur' }
   ],
   password: [
     { validator: checkPassword, trigger: 'blur' }
-    // { required: true, message: '请输入密码', trigger: 'blur' }
   ],
   passwordTwice: [
     { validator: checkPasswordTwice, trigger: 'blur' }
-    // { required: true, message: '请输入密码', trigger: 'blur' }
   ],
   code: [
     { validator: checkCode, trigger: 'blur' }
-    // { required: true, message: '请输入验证码', trigger: 'blur' }
   ]
 })
 
