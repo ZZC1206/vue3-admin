@@ -116,24 +116,81 @@ const userForm = reactive({
   code: ''
 })
 
+/** 用户名校验规则 */
+const checkUserName = (rule: any, value: any, callback: any) => {
+  // eslint-disable-next-line no-useless-escape
+  const regEmail = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/
+  if (!value) {
+    return callback(new Error('请输入帐号'))
+  } else if (!regEmail.test(value)) {
+    return callback(new Error('邮箱格式不正确'))
+  } else {
+    return callback()
+  }
+}
+
+/** 用户名校验规则 */
+const checkPassword = (rule: any, value: any, callback: any) => {
+  const regPassword = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/
+  if (!value) {
+    return callback(new Error('请输入密码'))
+  } else if (!regPassword.test(value)) {
+    return callback(new Error('密码必须6~20位，包含数字、字母'))
+  } else {
+    return callback()
+  }
+}
+
+/** 用户名校验规则 */
+const checkPasswordTwice = (rule: any, value: any, callback: any) => {
+  const regPassword = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/
+  const password = userForm.password
+  if (!value) {
+    return callback(new Error('请输入密码'))
+  } else if (!regPassword.test(value)) {
+    return callback(new Error('密码必须6~20位，包含数字、字母'))
+  } else if (password && password !== value) {
+    return callback(new Error('两次密码不一致'))
+  } else {
+    return callback()
+  }
+}
+
+/** 验证码校验规则 */
+const checkCode = (rule: any, value: any, callback: any) => {
+   const regCode = /^[a-z0-9]{6}$/
+  if (!value) {
+    return callback(new Error('请输入验证码'))
+  }
+  if (!regCode.test(value)) {
+    callback(new Error('验证码为6位'))
+  } else {
+    callback()
+  }
+}
+
 // 表单规则
 const userRules = reactive<FormRules>({
   userName: [
-    { required: true, message: '请输入帐号', trigger: 'blur' },
-    { min: 3, max: 5, message: '帐号必须3~5位', trigger: 'blur' }
+    { validator: checkUserName, trigger: 'blur' }
+    // { required: true, message: '请输入帐号', trigger: 'blur' },
+    // { min: 3, max: 5, message: '帐号必须3~5位', trigger: 'blur' }
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur' }
+    { validator: checkPassword, trigger: 'blur' }
+    // { required: true, message: '请输入密码', trigger: 'blur' }
   ],
   passwordTwice: [
-    { required: true, message: '请输入密码', trigger: 'blur' }
+    { validator: checkPasswordTwice, trigger: 'blur' }
+    // { required: true, message: '请输入密码', trigger: 'blur' }
   ],
   code: [
-    { required: true, message: '请输入验证码', trigger: 'blur' }
+    { validator: checkCode, trigger: 'blur' }
+    // { required: true, message: '请输入验证码', trigger: 'blur' }
   ]
 })
 
-// 提交按钮
+ /** 提交按钮 */
 const onSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
@@ -145,22 +202,22 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
   })
 }
 
-// 提交按钮
+/* 提交按钮 */
 const getCode = () => { console.log('获取验证码') }
 
-// 按钮组
+/* 按钮组变化监听 */
 const radioChange = () => {
   resetForm(userFormRef.value)
   resetFormData()
 }
 
-// 重置校验
+/* 重置校验 */
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.resetFields()
 }
 
-// 重置表单信息
+/* 重置表单信息 */
 const resetFormData = () => {
   userForm.userName = ''
   userForm.password = ''
