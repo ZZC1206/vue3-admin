@@ -9,25 +9,95 @@
           注册
         </li>
       </ul> -->
-      <el-radio-group
-        v-model="isLogin"
-        size="large"
+      <div class="radio-box">
+        <el-radio-group
+          v-model="isLogin"
+          size="default"
+        >
+          <el-radio-button label="登陆" />
+          <el-radio-button label="注册" />
+        </el-radio-group>
+      </div>
+      <el-form
+        ref="form"
+        :model="sizeForm"
+        label-width="auto"
+        label-position="top"
+        size="default"
       >
-        <el-radio-button label="登陆" />
-        <el-radio-button label="注册" />
-      </el-radio-group>
+        <el-form-item>
+          <el-input
+            v-model="sizeForm.userName"
+            :prefix-icon="User"
+            placeholder="电子邮箱"
+            size="large"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model="sizeForm.password"
+            :prefix-icon="Lock"
+            placeholder="密码"
+            type="password"
+            size="large"
+          />
+        </el-form-item>
+        <el-form-item>
+          <!-- <el-row :gutter="10">
+            <el-col :span="14">
+              <el-input v-model="sizeForm.code" />
+            </el-col>
+            <el-col :span="10">
+              <el-button @click="getCode">获取验证码</el-button>
+            </el-col>
+          </el-row> -->
+          <el-input
+            v-model="sizeForm.code"
+            placeholder="验证码"
+            size="large"
+          >
+            <template #append>
+              <el-button @click="getCode">
+                获取验证码
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            class="el-button-block"
+            @click="onSubmit"
+          >
+            登陆
+          </el-button>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+import { User, Lock } from '@element-plus/icons-vue'
 
 defineOptions({
   name: 'Login'
 })
 
 const isLogin = ref('登陆')
+
+const sizeForm = reactive({
+  userName: '',
+  password: '',
+  code: ''
+})
+
+// 提交按钮
+const onSubmit = () => { console.log(sizeForm) }
+
+// 提交按钮
+const getCode = () => { console.log('获取验证码') }
 
 </script>
 
@@ -45,11 +115,15 @@ const isLogin = ref('登陆')
   width: 320px;
   margin: auto; // 块元素水平居中
   background-color: #FFFFFF; // 设置背景颜色
-  border-radius: 4px;
-  padding: 20px 0;
-  display: flex;
-  justify-content: center;
-  align-content: center;
+  border-radius: 6px;
+  padding: 20px 40px 12px;
+
+  .radio-box {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    padding-bottom: 20px;
+  }
 }
 
 // .menu-tab {
