@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/valid-v-show -->
 <template>
   <div id="login">
     <div class="form-wrap">
@@ -14,31 +13,33 @@
         <el-radio-group
           v-model="isLogin"
           size="default"
+          @change="radioChange"
         >
           <el-radio-button label="登陆" />
           <el-radio-button label="注册" />
         </el-radio-group>
       </div>
       <el-form
-        ref="form"
-        :model="sizeForm"
+        ref="userFormRef"
+        :model="userForm"
+        :rules="userRules"
         label-width="auto"
         label-position="top"
         size="default"
       >
         <!-- 帐号 -->
-        <el-form-item>
+        <el-form-item prop="userName">
           <el-input
-            v-model="sizeForm.userName"
+            v-model="userForm.userName"
             :prefix-icon="User"
             placeholder="电子邮箱"
             size="large"
           />
         </el-form-item>
         <!-- 密码 -->
-        <el-form-item>
+        <el-form-item prop="password">
           <el-input
-            v-model="sizeForm.password"
+            v-model="userForm.password"
             :prefix-icon="Lock"
             placeholder="密码"
             type="password"
@@ -47,28 +48,31 @@
         </el-form-item>
         <!-- 二次密码 -->
         <el-collapse-transition>
-          <el-form-item v-show="isLogin === '注册'">
+          <el-form-item
+            v-show="isLogin === '注册'"
+            prop="passwordTwice"
+          >
             <el-input
-              v-model="sizeForm.passwordTwice"
+              v-model="userForm.passwordTwice"
               :prefix-icon="Lock"
-              placeholder="密码"
+              placeholder="再次输入密码"
               type="password"
               size="large"
             />
           </el-form-item>
         </el-collapse-transition>
         <!-- 验证码 -->
-        <el-form-item>
+        <el-form-item prop="code">
           <!-- <el-row :gutter="10">
             <el-col :span="14">
-              <el-input v-model="sizeForm.code" />
+              <el-input v-model="userForm.code" />
             </el-col>
             <el-col :span="10">
               <el-button @click="getCode">获取验证码</el-button>
             </el-col>
           </el-row> -->
           <el-input
-            v-model="sizeForm.code"
+            v-model="userForm.code"
             placeholder="验证码"
             size="large"
           >
@@ -84,7 +88,7 @@
           <el-button
             type="primary"
             class="el-button-block"
-            @click="onSubmit"
+            @click="onSubmit(userFormRef)"
           >
             {{ isLogin }}
           </el-button>
@@ -95,32 +99,74 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
-
+import { FormInstance, FormRules } from 'element-plus'
 defineOptions({
   name: 'Login'
 })
 
-const isLogin = ref('登陆')
+const isLogin = ref<string>('登陆')
 
-const sizeForm = reactive({
+const userFormRef = ref<FormInstance | undefined>()
+const userForm = reactive({
   userName: '',
   password: '',
   passwordTwice: '',
   code: ''
 })
 
+// 表单规则
+const userRules = reactive<FormRules>({
+  userName: [
+    { required: true, message: '请输入帐号', trigger: 'blur' },
+    { min: 3, max: 5, message: '帐号必须3~5位', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' }
+  ],
+  passwordTwice: [
+    { required: true, message: '请输入密码', trigger: 'blur' }
+  ],
+  code: [
+    { required: true, message: '请输入验证码', trigger: 'blur' }
+  ]
+})
+
 // 提交按钮
-const onSubmit = () => { console.log(sizeForm) }
+const onSubmit = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      console.log('submit!')
+    } else {
+      // console.log('error submit!', fields)
+    }
+  })
+}
 
 // 提交按钮
 const getCode = () => { console.log('获取验证码') }
 
-watch(isLogin, (newValue, oldValue) => {
-  console.log('isLogin变化了', newValue, oldValue)
-})
+// 按钮组
+const radioChange = () => {
+  resetForm(userFormRef.value)
+  resetFormData()
+}
 
+// 重置校验
+const resetForm = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  formEl.resetFields()
+}
+
+// 重置表单信息
+const resetFormData = () => {
+  userForm.userName = ''
+  userForm.password = ''
+  userForm.passwordTwice = ''
+  userForm.code = ''
+}
 </script>
 
 <style lang="scss" scoped>
