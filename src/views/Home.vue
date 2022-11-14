@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <h1>Hello,this's Home!for test</h1>
+    <h1>Hello,this's Home!</h1>
   </div>
   <el-row class="mb-4">
     <el-button>Default</el-button>
