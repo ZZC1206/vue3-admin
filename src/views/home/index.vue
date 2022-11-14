@@ -3,7 +3,10 @@
 </template>
 
 <script lang="ts" setup>
-// import { ref, reactive } from 'vue'
+defineOptions({
+  name: 'Home'
+})
+
 </script>
 
 <style lang="scss" scoped>
