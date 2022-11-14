@@ -10,6 +10,7 @@ declare module '@vue/runtime-core' {
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCalendar: typeof import('element-plus/es')['ElCalendar']
     ElCol: typeof import('element-plus/es')['ElCol']
+    ElCollapseTransition: typeof import('element-plus/es')['ElCollapseTransition']
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']

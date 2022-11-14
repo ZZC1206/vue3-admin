@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/valid-v-show -->
 <template>
   <div id="login">
     <div class="form-wrap">
@@ -25,6 +26,7 @@
         label-position="top"
         size="default"
       >
+        <!-- 帐号 -->
         <el-form-item>
           <el-input
             v-model="sizeForm.userName"
@@ -33,6 +35,7 @@
             size="large"
           />
         </el-form-item>
+        <!-- 密码 -->
         <el-form-item>
           <el-input
             v-model="sizeForm.password"
@@ -42,6 +45,19 @@
             size="large"
           />
         </el-form-item>
+        <!-- 二次密码 -->
+        <el-collapse-transition>
+          <el-form-item v-show="isLogin === '注册'">
+            <el-input
+              v-model="sizeForm.passwordTwice"
+              :prefix-icon="Lock"
+              placeholder="密码"
+              type="password"
+              size="large"
+            />
+          </el-form-item>
+        </el-collapse-transition>
+        <!-- 验证码 -->
         <el-form-item>
           <!-- <el-row :gutter="10">
             <el-col :span="14">
@@ -63,13 +79,14 @@
             </template>
           </el-input>
         </el-form-item>
+        <!-- 提交按钮 -->
         <el-form-item>
           <el-button
             type="primary"
             class="el-button-block"
             @click="onSubmit"
           >
-            登陆
+            {{ isLogin }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -78,7 +95,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
 
 defineOptions({
@@ -90,6 +107,7 @@ const isLogin = ref('登陆')
 const sizeForm = reactive({
   userName: '',
   password: '',
+  passwordTwice: '',
   code: ''
 })
 
@@ -98,6 +116,10 @@ const onSubmit = () => { console.log(sizeForm) }
 
 // 提交按钮
 const getCode = () => { console.log('获取验证码') }
+
+watch(isLogin, (newValue, oldValue) => {
+  console.log('isLogin变化了', newValue, oldValue)
+})
 
 </script>
 
