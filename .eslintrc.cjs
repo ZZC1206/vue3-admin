@@ -11,19 +11,22 @@ module.exports = {
     es2021: true
   },
   extends: [
-    'plugin:vue/vue3-strongly-recommended',
+    'standard',
+    // 'standard-with-typescript'
+    'plugin:vue/vue3-strongly-recommended'
     // 'plugin:vue/vue3-essential',
-    'standard-with-typescript'
   ],
   overrides: [
   ],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: ['./tsconfig.eslint.json']
+    parser: '@typescript-eslint/parser'
+    // project: ['./tsconfig.eslint.json']
   },
   plugins: [
-    'vue'
+    'vue',
+    '@typescript-eslint'
   ],
   rules: {
     indent: ['off', 2],
