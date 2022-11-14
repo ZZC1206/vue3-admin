@@ -129,7 +129,7 @@ const checkUserName = (rule: any, value: any, callback: any) => {
   }
 }
 
-/** 用户名校验规则 */
+/** 密码校验规则 */
 const checkPassword = (rule: any, value: any, callback: any) => {
   const regPassword = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/
   if (!value) {
@@ -141,7 +141,7 @@ const checkPassword = (rule: any, value: any, callback: any) => {
   }
 }
 
-/** 用户名校验规则 */
+/** 密码二次名校验规则 */
 const checkPasswordTwice = (rule: any, value: any, callback: any) => {
   const regPassword = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/
   const password = userForm.password
@@ -169,7 +169,7 @@ const checkCode = (rule: any, value: any, callback: any) => {
   }
 }
 
-// 表单规则
+/** 表单规则 */
 const userRules = reactive<FormRules>({
   userName: [
     { validator: checkUserName, trigger: 'blur' }
