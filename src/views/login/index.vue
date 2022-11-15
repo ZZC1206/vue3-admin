@@ -208,8 +208,6 @@ const getModule = () => {
 /** 验证码按钮 */
 const getCode = async () => {
   console.log('获取验证码')
-  userForm.userName = '960052730@qq.com'
-  console.log(getModule())
 
   await GetCode({
     username: userForm.userName,
