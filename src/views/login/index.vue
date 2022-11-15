@@ -3,7 +3,7 @@
     <div class="form-wrap">
       <!-- <ul class="menu-tab">
         <li class="current">
-          登陆
+          登录
         </li>
         <li>
           注册
@@ -15,7 +15,7 @@
           size="default"
           @change="radioChange"
         >
-          <el-radio-button label="登陆" />
+          <el-radio-button label="登录" />
           <el-radio-button label="注册" />
         </el-radio-group>
       </div>
@@ -109,7 +109,7 @@ defineOptions({
   name: 'Login'
 })
 
-const isLogin = ref<string>('登陆')
+const isLogin = ref<string>('登录')
 
 const userFormRef = ref<FormInstance | undefined>()
 const userForm = reactive({
@@ -195,6 +195,7 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
   })
 }
 
+ /** 验证码类型 */
 const getModule = () => {
   switch (isLogin.value) {
     case '登录':return 'Login'
@@ -204,16 +205,20 @@ const getModule = () => {
       return ''
   }
 }
-
 /** 验证码按钮 */
 const getCode = async () => {
   console.log('获取验证码')
-  const data = await GetCode({
+  userForm.userName = '960052730@qq.com'
+  console.log(getModule())
+
+  await GetCode({
     username: userForm.userName,
     module: getModule()
+  }).then((res) => {
+    console.log(res)
+  }).catch(error => {
+      console.log(error)
   })
-  console.log(data)
-  console.log(data.data)
 }
 
 /** 按钮组变化监听 */

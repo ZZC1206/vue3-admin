@@ -5,8 +5,10 @@ import request from '@/utils/request'
 import { AccountGetCodePostData, IGetCodeData } from './types/common'
 
 /** 获取验证码 */
-export const GetCode = async (params: AccountGetCodePostData) => await request<IGetCodeData>({
-  method: 'POST',
-  url: '/getCode/',
-  params
-})
+export const GetCode = async (data: AccountGetCodePostData) => {
+  return await request<IGetCodeData>({
+    method: 'post',
+    url: '/getCode/',
+    data
+  })
+}

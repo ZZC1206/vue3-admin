@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios'
 
 const instance = axios.create({
-  baseURL: 'http://v3.web-jshtml.cn/api', // 基础路径
+  // baseURL: 'http://v3.web-jshtml.cn/api', // 基础路径
+  baseURL: import.meta.env.VITE_API, // 基础路径
   timeout: 5000 // 超时，单位：毫秒
 })
 
