@@ -63,34 +63,36 @@
         </el-collapse-transition>
         <!-- 验证码 -->
         <el-form-item prop="code">
-          <!-- <el-row :gutter="10">
+          <el-row :gutter="10">
             <el-col :span="14">
-              <el-input v-model="userForm.code" />
+              <el-input
+                v-model="userForm.code"
+                placeholder="验证码"
+                size="large"
+              />
             </el-col>
             <el-col :span="10">
-              <el-button @click="getCode">获取验证码</el-button>
-            </el-col>
-          </el-row> -->
-          <el-input
-            v-model="userForm.code"
-            placeholder="验证码"
-            size="large"
-          >
-            <template #append>
               <el-button
-                type="primary"
+                :type="codeBtn.disabled? 'info': ''"
+                size="large"
+                class="el-button-block"
+                :loading="codeBtn.loading"
+                :disabled="codeBtn.disabled"
                 @click="getCode"
               >
-                获取验证码
+                {{ codeBtn.text }}
               </el-button>
-            </template>
-          </el-input>
+            </el-col>
+          </el-row>
         </el-form-item>
         <!-- 提交按钮 -->
         <el-form-item>
           <el-button
             type="primary"
+            size="large"
             class="el-button-block"
+            :loading="subBtn.loading"
+            :disabled="subBtn.disabled"
             @click="onSubmit(userFormRef)"
           >
             {{ isLogin }}
@@ -102,7 +104,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onBeforeUnmount } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
 import { FormInstance, FormRules, ElMessage } from 'element-plus'
 import { validateEmail, validatePassword, validateCode } from '@/utils/validate'
@@ -117,8 +119,8 @@ const isLogin = ref<string>('登录')
 const userFormRef = ref<FormInstance | undefined>()
 const userForm = reactive({
   userName: '960052730@qq.com',
-  password: '',
-  passwordTwice: '',
+  password: '123ads',
+  passwordTwice: '123asd',
   code: ''
 })
 
@@ -186,14 +188,22 @@ const userRules = reactive<FormRules>({
   ]
 })
 
+/** 提交按钮属性 */
+const subBtn = reactive({
+  loading: false,
+  disabled: false
+})
+
 /** 提交按钮 */
 const onSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
       console.log('submit!')
+      subBtn.loading = true
     } else {
-      // console.log('error submit!', fields)
+      ElMessage.error('登陆表单检验失败')
+      console.log('error submit!', fields)
     }
   })
 }
@@ -209,10 +219,16 @@ const getModule = () => {
   }
 }
 
+/** 验证码按钮属性 */
+const codeBtn = reactive({
+  loading: false,
+  disabled: false,
+  text: '获取',
+  timer: 0
+})
+
 /** 验证码按钮 */
 const getCode = async () => {
-  console.log('获取验证码')
-
   // 校验用户名
   if (!validateEmail(userForm.userName)) {
       ElMessage.warning('用户名不能为空 或 格式不正确')
@@ -223,44 +239,82 @@ const getCode = async () => {
       ElMessage.warning('密码不能为空 或 格式不正确')
       return false
   }
+  // 判断非‘登录’时，校验密码
+  if (getModule() === 'Register' && (userForm.password !== userForm.passwordTwice)) {
+    ElMessage.warning('两次密码不一致')
+    return false
+  }
+  codeBtn.loading = true
+  codeBtn.text = '发送中'
 
   await GetCode({
     username: userForm.userName,
     module: getModule()
   }).then((res) => {
-    console.log(res)
     if (res.resCode === 1024) {
       ElMessage.warning(res.message)
       return false
     } else if (res.resCode === 0) {
       ElMessage.success(res.message)
+      console.log(res.data)
       userForm.code = res.data.toString()
+      // 执行倒计时
+      countdown(10)
       return true
     } else {
       ElMessage.error(res.message)
       return false
     }
-  }).catch(() => { })
+  }).catch(() => {
+    codeBtn.text = '获取验证码'
+  }).finally(() => {
+    codeBtn.loading = false
+  })
 }
+
+/** 倒计时，默认60秒 */
+const countdown = (time : number = 60) => {
+  let second = time // 默认时间
+  codeBtn.loading = false // 取消加载
+  codeBtn.disabled = true // 禁用按钮
+  codeBtn.text = `${second} 秒` // 按钮文本
+  // 判断是否存在定时器，存在则先清除
+  if (codeBtn.timer) { clearInterval(codeBtn.timer) }
+  // 开启定时器
+  codeBtn.timer = setInterval(() => {
+      second--
+      codeBtn.text = `${second} 秒` // 按钮文本
+      if (second <= 0) {
+          codeBtn.text = '重新获取' // 按钮文本
+          codeBtn.disabled = false // 启用按钮
+          clearInterval(codeBtn.timer) // 清除倒计时
+      }
+  }, 1000)
+}
+
+// 组件销毁之前 - 生命周期
+onBeforeUnmount(() => {
+    clearInterval(codeBtn.timer) // 清除倒计时
+})
 
 /** 按钮组变化监听 */
 const radioChange = () => {
-  resetForm(userFormRef.value)
+  resetFormCheck(userFormRef.value)
   resetFormData()
 }
 
 /** 重置校验 */
-const resetForm = (formEl: FormInstance | undefined) => {
+const resetFormCheck = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.resetFields()
 }
 
 /** 重置表单信息 */
 const resetFormData = () => {
-  userForm.userName = ''
-  userForm.password = ''
-  userForm.passwordTwice = ''
-  userForm.code = ''
+  // userForm.userName = ''
+  // userForm.password = ''
+  // userForm.passwordTwice = ''
+  // userForm.code = ''
 }
 </script>
 
@@ -274,8 +328,7 @@ const resetFormData = () => {
 }
 
 .form-wrap {
-  box-sizing: border-box;
-  width: 320px;
+  width: 262px;
   margin: auto; // 块元素水平居中
   background-color: #FFFFFF; // 设置背景颜色
   border-radius: 6px;
