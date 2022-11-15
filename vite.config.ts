@@ -46,4 +46,19 @@ export default defineConfig({
       }
     }
   }
+  // server: {
+  //   proxy: {
+  //     // 字符串简写写法
+  //     '/foo': 'http://localhost:4567', // => 'http://localhost:4567/foo'
+  //     // 选项写法
+  //     '/api': {
+  //       // 代理的目标地址
+  //       target: 'http://jsonplaceholder.typicode.com',
+  //       // true，代理服务会把 origin 修改为目标地址 http://jsonplaceholder.typicode.com
+  //       changeOrigin: true,
+  //       // 路径重写
+  //       rewrite: (path) => path.replace(/^\/api/, '')
+  //     }
+  //   }
+  // }
 })
