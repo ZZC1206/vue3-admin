@@ -8,7 +8,7 @@ import { AccountGetCodePostData, IGetCodeData } from './types/common'
 export const GetCode = async (data: AccountGetCodePostData) => {
   return await request<IGetCodeData>({
     method: 'post',
-    url: '/getCode/',
+    url: '/getCode123/',
     data
   })
 }

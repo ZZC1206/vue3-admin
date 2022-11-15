@@ -18,7 +18,7 @@ export interface IGetCodeData {
   /** 验证码 */
   data: number | string,
   /** 业务状态码 */
-  resCode: string,
+  resCode: number,
   /** 消息 */
   message: string
 }

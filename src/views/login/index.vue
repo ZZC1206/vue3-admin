@@ -77,7 +77,10 @@
             size="large"
           >
             <template #append>
-              <el-button @click="getCode">
+              <el-button
+                type="primary"
+                @click="getCode"
+              >
                 获取验证码
               </el-button>
             </template>
@@ -101,7 +104,7 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
-import { FormInstance, FormRules } from 'element-plus'
+import { FormInstance, FormRules, ElMessage } from 'element-plus'
 import { validateEmail, validatePassword, validateCode } from '@/utils/validate'
 import { GetCode } from '@/api/common'
 
@@ -113,7 +116,7 @@ const isLogin = ref<string>('登录')
 
 const userFormRef = ref<FormInstance | undefined>()
 const userForm = reactive({
-  userName: '',
+  userName: '960052730@qq.com',
   password: '',
   passwordTwice: '',
   code: ''
@@ -183,7 +186,7 @@ const userRules = reactive<FormRules>({
   ]
 })
 
- /** 提交按钮 */
+/** 提交按钮 */
 const onSubmit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
@@ -195,7 +198,7 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
   })
 }
 
- /** 验证码类型 */
+/** 验证码类型 */
 const getModule = () => {
   switch (isLogin.value) {
     case '登录':return 'Login'
@@ -205,18 +208,39 @@ const getModule = () => {
       return ''
   }
 }
+
 /** 验证码按钮 */
 const getCode = async () => {
   console.log('获取验证码')
+
+  // 校验用户名
+  if (!validateEmail(userForm.userName)) {
+      ElMessage.warning('用户名不能为空 或 格式不正确')
+      return false
+  }
+  // 校验密码
+  if (!validatePassword(userForm.password)) {
+      ElMessage.warning('密码不能为空 或 格式不正确')
+      return false
+  }
 
   await GetCode({
     username: userForm.userName,
     module: getModule()
   }).then((res) => {
     console.log(res)
-  }).catch(error => {
-      console.log(error)
-  })
+    if (res.resCode === 1024) {
+      ElMessage.warning(res.message)
+      return false
+    } else if (res.resCode === 0) {
+      ElMessage.success(res.message)
+      userForm.code = res.data.toString()
+      return true
+    } else {
+      ElMessage.error(res.message)
+      return false
+    }
+  }).catch(() => { })
 }
 
 /** 按钮组变化监听 */
@@ -264,22 +288,4 @@ const resetFormData = () => {
     padding-bottom: 20px;
   }
 }
-
-// .menu-tab {
-//   text-align: center;
-
-//   li {
-//     display: inline-block;
-//     padding: 10px 24px;
-//     margin: 0 10px;
-//     color: #fff;
-//     font-size: 14px;
-//     border-radius: 5px;
-//     cursor: pointer;
-
-//     &.current {
-//       background-color: rgba(0, 0, 0, .1);
-//     }
-//   }
-// }
 </style>
