@@ -99,6 +99,12 @@
           </el-button>
         </el-form-item>
       </el-form>
+      <!-- <el-button @click="login">
+        登陆
+      </el-button>
+      <el-button @click="register">
+        注册
+      </el-button> -->
     </div>
   </div>
 </template>
@@ -109,6 +115,8 @@ import { User, Lock } from '@element-plus/icons-vue'
 import { FormInstance, FormRules, ElMessage } from 'element-plus'
 import { validateEmail, validatePassword, validateCode } from '@/utils/validate'
 import { GetCode } from '@/api/common'
+import { Register, Login } from '@/api/account'
+import sha1 from 'js-sha1'
 
 defineOptions({
   name: 'Login'
@@ -118,11 +126,25 @@ const isLogin = ref<string>('登录')
 
 const userFormRef = ref<FormInstance | undefined>()
 const userForm = reactive({
-  userName: '960052730@qq.com',
-  password: '123ads',
-  passwordTwice: '123asd',
+  // userName: '409019683@qq.com',
+  // password: 'qq111111',
+  // passwordTwice: 'qq111111',
+  userName: '',
+  password: '',
+  passwordTwice: '',
   code: ''
 })
+
+/** 验证码类型 */
+const getModule = () => {
+  switch (isLogin.value) {
+    case '登录':return 'Login'
+    case '注册':return 'Register'
+    case '忘记密码': return 'Forget'
+    default:
+      return ''
+  }
+}
 
 /** 用户名校验规则 */
 const checkUserName = (rule: any, value: any, callback: any) => {
@@ -148,6 +170,8 @@ const checkPassword = (rule: any, value: any, callback: any) => {
 
 /** 密码二次名校验规则 */
 const checkPasswordTwice = (rule: any, value: any, callback: any) => {
+  // 如果是登录，不需要校验确认密码，默认通过
+  if (getModule() === 'Login') { callback() }
   const password = userForm.password
   if (!value) {
     return callback(new Error('密码不能为空'))
@@ -201,22 +225,48 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
     if (valid) {
       console.log('submit!')
       subBtn.loading = true
+      // 判断是登录 / 注册
+      getModule() === 'Login' ? login() : register()
     } else {
       ElMessage.error('登陆表单检验失败')
       console.log('error submit!', fields)
+      return false
     }
   })
 }
 
-/** 验证码类型 */
-const getModule = () => {
-  switch (isLogin.value) {
-    case '登录':return 'Login'
-    case '注册':return 'Register'
-    case '忘记密码': return 'Forget'
-    default:
-      return ''
-  }
+/** 登陆 */
+const login = async () => {
+  await Login({
+    username: userForm.userName,
+    password: sha1(userForm.password),
+    code: parseInt(userForm.code)
+  })
+    .then((res) => { console.log(res) })
+    .catch((err) => { console.log(err) })
+    .finally(() => { })
+}
+
+/** 注册 */
+const register = async () => {
+  await Register({
+    username: userForm.userName,
+    password: sha1(userForm.password),
+    code: parseInt(userForm.code)
+  })
+    .then((res) => {
+      console.log(res)
+      if (res.data?.username) {
+        ElMessage.success(res.message)
+        userForm.userName = res.data?.username
+      } else if (res.data?.user || !res.data.code) {
+        ElMessage.warning(res.message)
+      }
+    })
+    .catch((err) => {
+      ElMessage.error(err.message)
+    })
+    .finally(() => { })
 }
 
 /** 验证码按钮属性 */
@@ -224,7 +274,7 @@ const codeBtn = reactive({
   loading: false,
   disabled: false,
   text: '获取',
-  timer: 0
+  timer: 1
 })
 
 /** 验证码按钮 */
@@ -259,7 +309,7 @@ const getCode = async () => {
       console.log(res.data)
       userForm.code = res.data.toString()
       // 执行倒计时
-      countdown(10)
+      countdown(30)
       return true
     } else {
       ElMessage.error(res.message)
@@ -292,16 +342,18 @@ const countdown = (time : number = 60) => {
   }, 1000)
 }
 
-// 组件销毁之前 - 生命周期
-onBeforeUnmount(() => {
-    clearInterval(codeBtn.timer) // 清除倒计时
-})
-
 /** 按钮组变化监听 */
 const radioChange = () => {
   resetFormCheck(userFormRef.value)
   resetFormData()
+  resetCodeBtn()
+  resetSubBtn()
 }
+
+// 组件销毁之前 - 生命周期
+onBeforeUnmount(() => {
+    clearInterval(codeBtn.timer) // 清除倒计时
+})
 
 /** 重置校验 */
 const resetFormCheck = (formEl: FormInstance | undefined) => {
@@ -312,9 +364,23 @@ const resetFormCheck = (formEl: FormInstance | undefined) => {
 /** 重置表单信息 */
 const resetFormData = () => {
   // userForm.userName = ''
-  // userForm.password = ''
-  // userForm.passwordTwice = ''
+  userForm.password = ''
+  userForm.passwordTwice = ''
   // userForm.code = ''
+}
+
+/** 重置登录按钮状态 */
+const resetSubBtn = () => {
+  subBtn.disabled = false
+  subBtn.loading = false
+}
+/** 重置验证码按钮状态 */
+const resetCodeBtn = () => {
+  // clearInterval(codeBtn.timer) // 清除倒计时
+  // codeBtn.timer = 1
+  // codeBtn.text = '获取'
+  codeBtn.disabled = false
+  codeBtn.loading = false
 }
 </script>
 

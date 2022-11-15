@@ -13,12 +13,22 @@ export interface AccountGetCodePostData {
   module: string
 }
 
-/** 用户获取验证码发送数据类型 */
+/** 用户获取验证码返回数据类型 */
 export interface IGetCodeData {
-  /** 验证码 */
-  data: number | string,
   /** 业务状态码 */
   resCode: number,
   /** 消息 */
   message: string
+  /** 验证码 */
+  data: number | string,
+}
+
+/** 异常接口返回数据类型 */
+export interface IErrorHttp {
+  /** 业务状态码 */
+  resCode: number,
+  /** 消息 */
+  message: string
+  /** 验证码 */
+  data: string | null,
 }

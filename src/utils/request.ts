@@ -47,9 +47,9 @@ instance.interceptors.response.use(
         case 403:
           err.message = '拒绝访问'
           break
-        case 404:
-          err.message = '请求错误，未找到该资源'
-          break
+        // case 404:
+        //   err.message = '请求错误，未找到该资源'
+        //   break
         case 405:
           err.message = '请求方法未允许'
           break
