@@ -103,6 +103,8 @@ import { ref, reactive } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
 import { FormInstance, FormRules } from 'element-plus'
 import { validateEmail, validatePassword, validateCode } from '@/utils/validate'
+import { GetCode } from '@/api/common'
+
 defineOptions({
   name: 'Login'
 })
@@ -193,22 +195,40 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
   })
 }
 
-/* 提交按钮 */
-const getCode = () => { console.log('获取验证码') }
+const getModule = () => {
+  switch (isLogin.value) {
+    case '登录':return 'Login'
+    case '注册':return 'Register'
+    case '忘记密码': return 'Forget'
+    default:
+      return ''
+  }
+}
 
-/* 按钮组变化监听 */
+/** 验证码按钮 */
+const getCode = async () => {
+  console.log('获取验证码')
+  const data = await GetCode({
+    username: userForm.userName,
+    module: getModule()
+  })
+  console.log(data)
+  console.log(data.data)
+}
+
+/** 按钮组变化监听 */
 const radioChange = () => {
   resetForm(userFormRef.value)
   resetFormData()
 }
 
-/* 重置校验 */
+/** 重置校验 */
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.resetFields()
 }
 
-/* 重置表单信息 */
+/** 重置表单信息 */
 const resetFormData = () => {
   userForm.userName = ''
   userForm.password = ''
