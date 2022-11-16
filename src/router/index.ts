@@ -2,12 +2,13 @@ import { createRouter, RouteRecordRaw, createWebHashHistory } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/about',
-    component: async () => await import('@/views/About.vue')
+    path: '/',
+    redirect: '/login'
   },
   {
-    path: '/home',
-    component: async () => await import('@/views/Home.vue')
+    path: '/login',
+    name: 'login',
+    component: async () => await import('@/views/login/index.vue')
   }
 ]
 

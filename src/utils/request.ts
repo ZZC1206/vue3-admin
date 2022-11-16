@@ -13,25 +13,25 @@ instance.interceptors.request.use(
     // 请求发送前做一些处理，例如：统一设置用户身份 Token
     return config
   },
-  error => {
+  async error => {
     // 处理请求错误
-    return Promise.reject(error)
+    return await Promise.reject(error)
   }
 )
 
 // 响应拦截器
 instance.interceptors.response.use(
-  response => {
+  async response => {
     // 使用响应数据，2xx范围内的状态代码都会触发
     const data = response.data
     if (data.resCode === 0) {
-      return Promise.resolve(data)
+      return await Promise.resolve(data)
     } else {
       ElMessage.error(`业务代码：${data.resCode}，${data.message}`)
-      return Promise.reject(data)
+      return await Promise.reject(data)
     }
   },
-  err => {
+  async err => {
     // 处理响应错误，超出2xx范围的状态代码都会触发，例如 token 无效、服务端异常等
 
     if (err && err.response) {
@@ -86,7 +86,7 @@ instance.interceptors.response.use(
       }
     }
     ElMessage.error(`错误代码：${err.response.status}；${err.message}`)
-    return Promise.reject(err)
+    return await Promise.reject(err)
   }
 )
 
