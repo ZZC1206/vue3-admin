@@ -1,20 +1,27 @@
 import { createRouter, RouteRecordRaw, createWebHashHistory } from 'vue-router'
+import { consoleRoutes } from './modules/console'
+import { systemRoutes } from './modules/system'
+import { infoRoutes } from './modules/info'
+
+// type _RouteRecordRaw = RouteRecordRaw & { hidden?: boolean }
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/home'
+    name: 'Home',
+    redirect: '/home',
+    hidden: true
   },
   {
     path: '/login',
     name: 'Login',
+    hidden: true,
     component: async () => await import('@/views/login/index.vue')
   },
-  {
-    path: '/home',
-    name: 'Home',
-    component: async () => await import('@/layout/index.vue')
-  }
+  // 后台首页
+  consoleRoutes,
+  systemRoutes,
+  infoRoutes
 ]
 
 const router = createRouter({

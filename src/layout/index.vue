@@ -1,16 +1,24 @@
 <template>
   <el-container>
     <el-aside>
-      Aside
+      <Aside />
     </el-aside>
     <el-container>
-      <el-header>Header</el-header>
-      <el-main>Main</el-main>
+      <el-header>
+        <Header />
+      </el-header>
+      <el-main>
+        <Main />
+      </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script lang="ts" setup>
+import Aside from './components/Aside/index.vue'
+import Header from './components/Header/index.vue'
+import Main from './components/Main/index.vue'
+
 defineOptions({
   name: 'Layout'
 })
@@ -24,26 +32,19 @@ defineOptions({
 .el-header {
   background-color: #C6E2FF;
   color: #333;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 60px;
 }
 
 .el-aside {
-  width: 200px;
-  background-color: #D9ECFF;
+  width: 250px;
+  // background-color: #D9ECFF;
+  background-color: #FFFFFF;
   color: #333;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .el-main {
   background-color: #ECF5FF;
   color: #333;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 </style>
