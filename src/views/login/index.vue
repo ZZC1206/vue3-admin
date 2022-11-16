@@ -53,7 +53,7 @@
         <!-- 二次密码 -->
         <el-collapse-transition>
           <el-form-item
-            v-show="isLogin === '注册'"
+            v-show="isLogin === 'Register'"
             prop="passwordTwice"
           >
             <el-input
