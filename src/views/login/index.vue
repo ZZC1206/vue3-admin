@@ -15,8 +15,12 @@
           size="default"
           @change="radioChange"
         >
-          <el-radio-button label="登录" />
-          <el-radio-button label="注册" />
+          <el-radio-button label="Login">
+            登录
+          </el-radio-button>
+          <el-radio-button label="Register">
+            注册
+          </el-radio-button>
         </el-radio-group>
       </div>
       <el-form
@@ -95,7 +99,7 @@
             :disabled="subBtn.disabled"
             @click="onSubmit(userFormRef)"
           >
-            {{ isLogin }}
+            {{ isLogin==='Login'?'登陆':'注册' }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -122,7 +126,7 @@ defineOptions({
   name: 'Login'
 })
 
-const isLogin = ref<string>('登录')
+const isLogin = ref<string>('Login')
 
 const userFormRef = ref<FormInstance | undefined>()
 const userForm = reactive({
@@ -134,17 +138,6 @@ const userForm = reactive({
   passwordTwice: '',
   code: ''
 })
-
-/** 验证码类型 */
-const getModule = () => {
-  switch (isLogin.value) {
-    case '登录':return 'Login'
-    case '注册':return 'Register'
-    case '忘记密码': return 'Forget'
-    default:
-      return ''
-  }
-}
 
 /** 用户名校验规则 */
 const checkUserName = (rule: any, value: any, callback: any) => {
@@ -171,7 +164,7 @@ const checkPassword = (rule: any, value: any, callback: any) => {
 /** 密码二次名校验规则 */
 const checkPasswordTwice = (rule: any, value: any, callback: any) => {
   // 如果是登录，不需要校验确认密码，默认通过
-  if (getModule() === 'Login') { callback() }
+  if (isLogin.value === 'Login') { callback() }
   const password = userForm.password
   if (!value) {
     return callback(new Error('密码不能为空'))
@@ -226,7 +219,7 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
       console.log('submit!')
       subBtn.loading = true
       // 判断是登录 / 注册
-      getModule() === 'Login' ? login() : register()
+      isLogin.value === 'Login' ? login() : register()
     } else {
       ElMessage.error('登陆表单检验失败')
       console.log('error submit!', fields)
@@ -290,7 +283,7 @@ const getCode = async () => {
       return false
   }
   // 判断非‘登录’时，校验密码
-  if (getModule() === 'Register' && (userForm.password !== userForm.passwordTwice)) {
+  if (isLogin.value === 'Register' && (userForm.password !== userForm.passwordTwice)) {
     ElMessage.warning('两次密码不一致')
     return false
   }
@@ -299,7 +292,7 @@ const getCode = async () => {
 
   await GetCode({
     username: userForm.userName,
-    module: getModule()
+    module: isLogin.value
   }).then((res) => {
     if (res.resCode === 1024) {
       ElMessage.warning(res.message)
@@ -366,7 +359,7 @@ const resetFormData = () => {
   // userForm.userName = ''
   userForm.password = ''
   userForm.passwordTwice = ''
-  // userForm.code = ''
+  userForm.code = ''
 }
 
 /** 重置登录按钮状态 */
@@ -376,9 +369,9 @@ const resetSubBtn = () => {
 }
 /** 重置验证码按钮状态 */
 const resetCodeBtn = () => {
-  // clearInterval(codeBtn.timer) // 清除倒计时
-  // codeBtn.timer = 1
-  // codeBtn.text = '获取'
+  clearInterval(codeBtn.timer) // 清除倒计时
+  codeBtn.timer = 1
+  codeBtn.text = '获取'
   codeBtn.disabled = false
   codeBtn.loading = false
 }
