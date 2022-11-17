@@ -20,8 +20,8 @@ const routes: RouteRecordRaw[] = [
   },
   // 后台首页
   consoleRoutes,
-  systemRoutes,
-  infoRoutes
+  infoRoutes,
+  systemRoutes
 ]
 
 const router = createRouter({

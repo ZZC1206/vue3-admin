@@ -5,7 +5,8 @@ export const infoRoutes: RouteRecordRaw = {
   name: 'News',
   hidden: false,
   meta: {
-    title: '信息管理'
+    title: '信息管理',
+    icon: 'information'
   },
   component: () => import('@/layout/index.vue'),
   children: [

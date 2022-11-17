@@ -5,7 +5,8 @@ export const systemRoutes: RouteRecordRaw = {
   name: 'System',
   hidden: false,
   meta: {
-    title: '系统配置'
+    title: '系统配置',
+    icon: 'system'
   },
   component: () => import('@/layout/index.vue'),
   children: [

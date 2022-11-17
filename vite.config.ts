@@ -8,6 +8,7 @@ import DefineOptions from 'unplugin-vue-define-options/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
 // https://vitejs.dev/config/
 export default ({ mode }) => {
@@ -36,6 +37,14 @@ export default ({ mode }) => {
       }),
       Components({
         resolvers: [ElementPlusResolver()]
+      }),
+      createSvgIconsPlugin({
+        // 指定需要缓存的图标文件夹
+        iconDirs: [path.resolve(process.cwd(), 'src/components/svgIcon/icon')],
+        // 指定symbolId格式
+        symbolId: 'icon-[name]'
+        // inject?: 'body-last' | 'body-first'
+        // customDomId: '__svg__icons__dom__'
       })
     ],
     resolve: {

@@ -15,6 +15,10 @@
             :index="item.children[0].path"
           >
             <template #title>
+              <svg-icon
+                name="home"
+                color="#303133"
+              />
               <span>{{ item.children[0].meta?.title }}</span>
             </template>
           </el-menu-item>
@@ -23,6 +27,10 @@
         <template v-else>
           <el-sub-menu :index="item.path">
             <template #title>
+              <svg-icon
+                :name="item.meta?.icon"
+                color="#303133"
+              />
               <span>{{ item.meta?.title }}</span>
             </template>
             <template

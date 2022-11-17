@@ -20,7 +20,8 @@ export const consoleRoutes: RouteRecordRaw = {
   name: 'Home',
   hidden: false,
   meta: {
-    title: '控制台'
+    title: '控制台',
+    icon: 'home'
   },
   component: () => import('@/layout/index.vue'),
   children: [
