@@ -1,5 +1,15 @@
 // 按钮在默认情况下为行内块级元素，通过 block 属性可以将按钮的元素类型设置为块级元素。
-.el-button-block{
+.el-button-block {
   display: block;
   width: 100%;
+}
+
+// 导航菜单高亮
+.is-active {
+  background-color: rgba(153, 214, 75, 0.2) !important;
+}
+.is-opened {
+  .el-sub-menu__title {
+    background-color: rgba(153, 214, 75, 1) !important;
+  }
 }

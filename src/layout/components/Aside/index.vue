@@ -1,7 +1,15 @@
 <template>
+  <h1 class="logo">
+    <img
+      :src="logo"
+      alt="前端"
+    >
+  </h1>
   <el-menu
-    default-active="2"
-    class="el-menu-vertical-demo"
+    text-color="#28251B"
+    active-text-color="#28251B"
+    background-color="#FFF"
+    :default-active="currentPath"
   >
     <template
       v-for="item in routes"
@@ -17,7 +25,7 @@
             <template #title>
               <svg-icon
                 name="home"
-                color="#303133"
+                color="#28251B"
               />
               <span>{{ item.children[0].meta?.title }}</span>
             </template>
@@ -29,7 +37,7 @@
             <template #title>
               <svg-icon
                 :name="item.meta?.icon"
-                color="#303133"
+                color="#28251B"
               />
               <span>{{ item.meta?.title }}</span>
             </template>
@@ -52,7 +60,8 @@
 </template>
 
 <script lang="ts" setup>
-import { useRouter, RouteRecordRaw } from 'vue-router'
+import { computed } from 'vue'
+import { useRouter, RouteRecordRaw, useRoute } from 'vue-router'
 
 defineOptions({
   name: 'Aside'
@@ -71,10 +80,27 @@ const hasonlyChild = (children: RouteRecordRaw[] | undefined): boolean => {
   else return false
 }
 
+const { path } = useRoute()
+const currentPath = computed(() => path)
+
+const logo = Object.keys(import.meta.glob('@/assets/images/logo.png', { eager: false }))[0]
+
 </script>
 
 <style lang="scss" scoped>
 .el-menu {
   border-right: none;
+}
+
+.logo {
+  margin: 0;
+  padding: 9px 0;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+
+  img {
+    margin: auto;
+  }
 }
 </style>

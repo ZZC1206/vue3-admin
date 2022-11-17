@@ -45,4 +45,13 @@ const symbolId = computed(() => `#${props.prefix}-${props.name}`)
   height: 1.3em;
   margin-right: 5px;
 }
+
+.is-active {
+  .svg-class {
+    width: 1.3em;
+    height: 1.3em;
+    margin-right: 5px;
+    fill: #F04E37 !important;
+  }
+}
 </style>

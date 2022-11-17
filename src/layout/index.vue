@@ -31,20 +31,15 @@ defineOptions({
 
 .el-header {
   background-color: #C6E2FF;
-  color: #333;
   height: 60px;
 }
 
 .el-aside {
-  width: 250px;
-  // background-color: #D9ECFF;
-  background-color: #FFFFFF;
-  color: #333;
+  width: 240px;
+  background-color: #FFF;
 }
 
 .el-main {
   background-color: #ECF5FF;
-  color: #333;
 }
-
 </style>
