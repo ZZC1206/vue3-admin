@@ -9,6 +9,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import IconsResolver from 'unplugin-icons/resolver'
 
 // https://vitejs.dev/config/
 export default ({ mode }) => {
@@ -33,10 +34,22 @@ export default ({ mode }) => {
         targets: ['defaults', 'not IE 11']
       }),
       AutoImport({
-        resolvers: [ElementPlusResolver()]
+        resolvers: [
+          ElementPlusResolver(),
+          // 自动导入图标组件
+          IconsResolver({
+            prefix: 'Icon'
+          })
+        ]
       }),
       Components({
-        resolvers: [ElementPlusResolver()]
+        // 自动导入 Element Plus 组件
+        resolvers: [
+          ElementPlusResolver(),
+        // 自动注册图标组件
+        IconsResolver({
+          enabledCollections: ['ep']
+        })]
       }),
       createSvgIconsPlugin({
         // 指定需要缓存的图标文件夹
@@ -56,6 +69,7 @@ export default ({ mode }) => {
       preprocessorOptions: {
         scss: {
           additionalData: '@import "@/styles/variables.scss";'
+          // additionalData: '@use "@/styles/variables.scss" as *;'
         }
       }
     },

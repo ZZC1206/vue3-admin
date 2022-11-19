@@ -49,3 +49,13 @@ export interface IAccountRegisterData {
   /** 业务状态码 */
   resCode: number
 }
+
+/** 用户‘退出’返回数据 */
+export interface IAccountLogoutData {
+  /** 数据集合 */
+  data: string,
+  /** 消息 */
+  message: string,
+  /** 业务状态码 */
+  resCode: number
+}

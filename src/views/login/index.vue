@@ -77,7 +77,7 @@
             </el-col>
             <el-col :span="10">
               <el-button
-                :type="codeBtn.disabled? 'info': ''"
+                :type="codeBtn.disabled ? 'info' : ''"
                 size="large"
                 class="el-button-block"
                 :loading="codeBtn.loading"
@@ -99,7 +99,7 @@
             :disabled="subBtn.disabled"
             @click="onSubmit(userFormRef)"
           >
-            {{ isLogin==='Login'?'登陆':'注册' }}
+            {{ isLogin === 'Login' ? '登陆' : '注册' }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -119,8 +119,10 @@ import { User, Lock } from '@element-plus/icons-vue'
 import { FormInstance, FormRules, ElMessage } from 'element-plus'
 import { validateEmail, validatePassword, validateCode } from '@/utils/validate'
 import { GetCode } from '@/api/common'
-import { Register, Login } from '@/api/account'
+import { Register } from '@/api/account'
 import sha1 from 'js-sha1'
+import { useUserStore } from '@/store/useUserStore'
+import { useRoute, useRouter } from 'vue-router'
 
 defineOptions({
   name: 'Login'
@@ -130,12 +132,12 @@ const isLogin = ref<string>('Login')
 
 const userFormRef = ref<FormInstance | undefined>()
 const userForm = reactive({
-  // userName: '409019683@qq.com',
-  // password: 'qq111111',
-  // passwordTwice: 'qq111111',
-  userName: '',
-  password: '',
-  passwordTwice: '',
+  userName: '409019683@qq.com',
+  password: 'qq111111',
+  passwordTwice: 'qq111111',
+  // userName: '',
+  // password: '',
+  // passwordTwice: '',
   code: ''
 })
 
@@ -164,7 +166,10 @@ const checkPassword = (rule: any, value: any, callback: any) => {
 /** 密码二次名校验规则 */
 const checkPasswordTwice = (rule: any, value: any, callback: any) => {
   // 如果是登录，不需要校验确认密码，默认通过
-  if (isLogin.value === 'Login') { callback() }
+  if (isLogin.value === 'Login') {
+    callback()
+    return
+  }
   const password = userForm.password
   if (!value) {
     return callback(new Error('密码不能为空'))
@@ -225,19 +230,37 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
       console.log('error submit!', fields)
       return false
     }
-  })
+  }).finally(() => resetSubBtn())
 }
+
+const userstore = useUserStore()
+
+const router = useRouter()
+const route = useRoute()
 
 /** 登陆 */
 const login = async () => {
-  await Login({
+  // await Login({
+  //   username: userForm.userName,
+  //   password: sha1(userForm.password),
+  //   code: parseInt(userForm.code)
+  // })
+  await userstore.userLogin({
     username: userForm.userName,
     password: sha1(userForm.password),
     code: parseInt(userForm.code)
+  }).then((res) => {
+    // 跳转回原来页面
+    let redirect = route.query.redirect
+    if (typeof redirect !== 'string') {
+      redirect = '/'
+    }
+    router.replace(redirect)
+
+    console.log(res)
   })
-    .then((res) => { console.log(res) })
-    .catch((err) => { console.log(err) })
-    .finally(() => { })
+    .catch((err) => { ElMessage.error('登陆失败：' + err) })
+  // .finally(() => { })
 }
 
 /** 注册 */
@@ -259,7 +282,7 @@ const register = async () => {
     .catch((err) => {
       ElMessage.error(err.message)
     })
-    .finally(() => { })
+  // .finally(() => { })
 }
 
 /** 验证码按钮属性 */
@@ -274,13 +297,13 @@ const codeBtn = reactive({
 const getCode = async () => {
   // 校验用户名
   if (!validateEmail(userForm.userName)) {
-      ElMessage.warning('用户名不能为空 或 格式不正确')
-      return false
+    ElMessage.warning('用户名不能为空 或 格式不正确')
+    return false
   }
   // 校验密码
   if (!validatePassword(userForm.password)) {
-      ElMessage.warning('密码不能为空 或 格式不正确')
-      return false
+    ElMessage.warning('密码不能为空 或 格式不正确')
+    return false
   }
   // 判断非‘登录’时，校验密码
   if (isLogin.value === 'Register' && (userForm.password !== userForm.passwordTwice)) {
@@ -316,7 +339,7 @@ const getCode = async () => {
 }
 
 /** 倒计时，默认60秒 */
-const countdown = (time : number = 60) => {
+const countdown = (time: number = 60) => {
   let second = time // 默认时间
   codeBtn.loading = false // 取消加载
   codeBtn.disabled = true // 禁用按钮
@@ -325,13 +348,13 @@ const countdown = (time : number = 60) => {
   if (codeBtn.timer) { clearInterval(codeBtn.timer) }
   // 开启定时器
   codeBtn.timer = setInterval(() => {
-      second--
-      codeBtn.text = `${second} 秒` // 按钮文本
-      if (second <= 0) {
-          codeBtn.text = '重新获取' // 按钮文本
-          codeBtn.disabled = false // 启用按钮
-          clearInterval(codeBtn.timer) // 清除倒计时
-      }
+    second--
+    codeBtn.text = `${second} 秒` // 按钮文本
+    if (second <= 0) {
+      codeBtn.text = '重新获取' // 按钮文本
+      codeBtn.disabled = false // 启用按钮
+      clearInterval(codeBtn.timer) // 清除倒计时
+    }
   }, 1000)
 }
 
@@ -345,7 +368,7 @@ const radioChange = () => {
 
 // 组件销毁之前 - 生命周期
 onBeforeUnmount(() => {
-    clearInterval(codeBtn.timer) // 清除倒计时
+  clearInterval(codeBtn.timer) // 清除倒计时
 })
 
 /** 重置校验 */

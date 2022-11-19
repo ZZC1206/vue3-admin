@@ -11,8 +11,8 @@ export const infoRoutes: RouteRecordRaw = {
   component: () => import('@/layout/index.vue'),
   children: [
     {
-      path: '/newsindex',
-      name: 'Newsindex',
+      path: 'newsIndex',
+      name: 'newsIndex',
       hidden: false,
       meta: {
         title: '信息列表'
@@ -20,7 +20,7 @@ export const infoRoutes: RouteRecordRaw = {
       component: () => import('@/views/info/index.vue')
     },
     {
-      path: '/newsCategory',
+      path: 'newsCategory',
       name: 'NewsCategory',
       hidden: false,
       meta: {
@@ -29,7 +29,7 @@ export const infoRoutes: RouteRecordRaw = {
       component: () => import('@/views/info/Category.vue')
     },
     {
-      path: '/newsDetailed',
+      path: 'newsDetailed',
       name: 'NewsDetailed',
       hidden: false,
       meta: {

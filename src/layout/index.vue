@@ -20,7 +20,7 @@ import Header from './components/Header/index.vue'
 import Main from './components/Main/index.vue'
 
 defineOptions({
-  name: 'Layout'
+  name: 'layout'
 })
 </script>
 
@@ -30,13 +30,16 @@ defineOptions({
 }
 
 .el-header {
-  background-color: #C6E2FF;
+  background-color: #FFFFFF;
   height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .el-aside {
-  width: 240px;
-  background-color: #FFF;
+  width: auto;
+  background-color: #2B579A;
 }
 
 .el-main {

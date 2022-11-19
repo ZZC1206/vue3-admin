@@ -6,9 +6,11 @@
     >
   </h1>
   <el-menu
-    text-color="#28251B"
-    active-text-color="#28251B"
-    background-color="#FFF"
+    class="el-menu-vertical-demo"
+    text-color="#FFFFFF"
+    active-text-color="#FFFFFF"
+    background-color="#2B579A"
+    :collapse="settingStore.isCollapse"
     :default-active="currentPath"
   >
     <template
@@ -21,12 +23,14 @@
           <el-menu-item
             v-if="item.children?.length"
             :index="item.children[0].path"
+            @click="handleChilk(item?.children[0]?.name)"
           >
+            <svg-icon
+              :name="item.meta?.icon"
+              color="#FFFFFF"
+              class="hover-color"
+            />
             <template #title>
-              <svg-icon
-                name="home"
-                color="#28251B"
-              />
               <span>{{ item.children[0].meta?.title }}</span>
             </template>
           </el-menu-item>
@@ -37,7 +41,7 @@
             <template #title>
               <svg-icon
                 :name="item.meta?.icon"
-                color="#28251B"
+                color="#FFFFFF"
               />
               <span>{{ item.meta?.title }}</span>
             </template>
@@ -48,6 +52,8 @@
               <el-menu-item
                 v-if="!child.hidden"
                 :index="child.path"
+                class="hover-color"
+                @click="handleChilk(child.name)"
               >
                 <span>{{ child.meta?.title }}</span>
               </el-menu-item>
@@ -61,13 +67,16 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useRouter, RouteRecordRaw, useRoute } from 'vue-router'
+import { useRouter, RouteRecordRaw, useRoute, RouteRecordName } from 'vue-router'
+import { useSettingStore } from '@/store/useSettingStore'
+import router from '@/router'
 
 defineOptions({
   name: 'Aside'
 })
-const { options } = useRouter()
+const settingStore = useSettingStore()
 
+const { options } = useRouter()
 const routes = options.routes
 
 const hasonlyChild = (children: RouteRecordRaw[] | undefined): boolean => {
@@ -81,9 +90,20 @@ const hasonlyChild = (children: RouteRecordRaw[] | undefined): boolean => {
 }
 
 const { path } = useRoute()
-const currentPath = computed(() => path)
+const currentPath = computed(() => path.split('/').pop())
 
-const logo = Object.keys(import.meta.glob('@/assets/images/logo.png', { eager: false }))[0]
+const logo = computed(() => {
+  const urlPath = settingStore.isCollapse
+    ? Object.keys(import.meta.glob('@/assets/images/logo-min.png', { eager: false }))[0]
+    : Object.keys(import.meta.glob('@/assets/images/logo.png', { eager: false }))[0]
+  return urlPath
+})
+
+const handleChilk = (item: RouteRecordName | undefined) => {
+  if (!item) return false
+  console.log(item)
+  router.push({ name: item })
+}
 
 </script>
 
@@ -92,15 +112,20 @@ const logo = Object.keys(import.meta.glob('@/assets/images/logo.png', { eager: f
   border-right: none;
 }
 
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 240px;
+  // min-height: 400px;
+}
+
+.hover-color {
+  --el-menu-hover-bg-color: #19478A
+}
+
 .logo {
   margin: 0;
   padding: 9px 0;
   display: flex;
   justify-content: center;
   align-content: center;
-
-  img {
-    margin: auto;
-  }
 }
 </style>

@@ -8,8 +8,7 @@ import { infoRoutes } from './modules/info'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'Home',
-    redirect: '/home',
+    redirect: '/home/console',
     hidden: true
   },
   {

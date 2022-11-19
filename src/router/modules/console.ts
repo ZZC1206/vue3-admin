@@ -26,7 +26,7 @@ export const consoleRoutes: RouteRecordRaw = {
   component: () => import('@/layout/index.vue'),
   children: [
     {
-      path: '/console',
+      path: 'console',
       name: 'Console',
       hidden: false,
       meta: {
