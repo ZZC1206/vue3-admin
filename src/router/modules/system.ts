@@ -24,7 +24,8 @@ export const systemRoutes: RouteRecordRaw = {
       name: 'Role',
       hidden: false,
       meta: {
-        title: '角色列表'
+        title: '角色列表',
+        requiresAuth: true
       },
       component: () => import('@/views/system/Role.vue')
     },

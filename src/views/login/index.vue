@@ -250,14 +250,13 @@ const login = async () => {
     password: sha1(userForm.password),
     code: parseInt(userForm.code)
   }).then((res) => {
+    // console.log(res)
     // 跳转回原来页面
-    let redirect = route.query.redirect
+    let redirect = route.query.redirect || '/'
     if (typeof redirect !== 'string') {
       redirect = '/'
     }
     router.replace(redirect)
-
-    console.log(res)
   })
     .catch((err) => { ElMessage.error('登陆失败：' + err) })
   // .finally(() => { })

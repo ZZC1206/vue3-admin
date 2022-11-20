@@ -1,12 +1,15 @@
 import { defineStore } from 'pinia'
 import { Login, Logout } from '@/api/account'
 import { AccountLoginOrRegisterData } from '@/api/types/account'
+import { ElMessage } from 'element-plus'
 
 export const useUserStore = defineStore('useUserStore', {
+  // 开启数据持久化
+  persist: true,
   state: () => {
     return {
-      token: '123',
-      userName: '123'
+      token: '',
+      userName: ''
     }
   },
   getters: {},
@@ -31,6 +34,9 @@ export const useUserStore = defineStore('useUserStore', {
           .then((res) => {
             // const data = res.data
             console.log(res)
+            if (res.resCode === 0) {
+                ElMessage.success(res.message)
+            }
             this.clearInfo()
             resolve(res)
           })
@@ -43,6 +49,5 @@ export const useUserStore = defineStore('useUserStore', {
       this.token = ''
       this.userName = ''
     }
-  },
-  persist: true
+  }
 })

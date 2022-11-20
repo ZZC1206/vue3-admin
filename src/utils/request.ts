@@ -1,5 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/store/useUserStore'
+import router from '@/router'
 
 const instance = axios.create({
   // baseURL: 'http://v3.web-jshtml.cn/api', // 基础路径
@@ -11,6 +13,11 @@ const instance = axios.create({
 instance.interceptors.request.use(
   config => {
     // 请求发送前做一些处理，例如：统一设置用户身份 Token
+    const userStore = useUserStore()
+    if (config && config?.headers) {
+      config.headers.Token = userStore.token
+      config.headers.Username = userStore.userName
+    }
     return config
   },
   error => {
@@ -27,15 +34,32 @@ instance.interceptors.response.use(
     if (data.resCode === 0) {
       return Promise.resolve(data)
     } else {
+      // 处理 Token 过期
       ElMessage.error(`业务代码：${data.resCode}，${data.message}`)
       return Promise.reject(data)
     }
   },
   err => {
     // 处理响应错误，超出2xx范围的状态代码都会触发，例如 token 无效、服务端异常等
+    const errorData = JSON.parse(err.request.response)
+    // token失效自动退出
+    if (errorData.resCode === 1010) {
+      if (errorData.message) {
+        ElMessage.error(errorData.message)
+      }
+      // 清空信息
+      const userStore = useUserStore()
+      userStore.clearInfo()
+      // 返回登录页面
+      router.push({
+        name: 'Login',
+        path: '/login'
+      })
+      return Promise.reject(err)
+    }
 
+    // 1.公共错误处理
     if (err && err.response) {
-      // 1.公共错误处理
       // 2.根据响应码具体处理
       switch (err.response.status) {
         case 400:

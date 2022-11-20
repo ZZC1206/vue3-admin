@@ -21,9 +21,9 @@
         <!-- 渲染有一个子路由 -->
         <template v-if="hasonlyChild(item.children)">
           <el-menu-item
-            v-if="item.children?.length"
+            v-if="item.children"
             :index="item.children[0].path"
-            @click="handleChilk(item?.children[0]?.name)"
+            @click="handleChilk(item)"
           >
             <svg-icon
               :name="item.meta?.icon"
@@ -53,7 +53,7 @@
                 v-if="!child.hidden"
                 :index="child.path"
                 class="hover-color"
-                @click="handleChilk(child.name)"
+                @click="handleChilk(child)"
               >
                 <span>{{ child.meta?.title }}</span>
               </el-menu-item>
@@ -67,7 +67,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useRouter, RouteRecordRaw, useRoute, RouteRecordName } from 'vue-router'
+import { useRouter, RouteRecordRaw, useRoute } from 'vue-router'
 import { useSettingStore } from '@/store/useSettingStore'
 import router from '@/router'
 
@@ -99,11 +99,21 @@ const logo = computed(() => {
   return urlPath
 })
 
-const handleChilk = (item: RouteRecordName | undefined) => {
-  if (!item) return false
-  console.log(item)
-  router.push({ name: item })
+const handleChilk = (item: RouteRecordRaw) => {
+  if (!item.children) {
+    // console.log(item.name)
+    router.push({ name: item.name })
+  } else if (item.children.length === 1) {
+    // console.log(item.children[0].name)
+    router.push({ name: item.children[0].name })
+  }
 }
+
+// const handleChilk = (item: RouteRecordName | undefined) => {
+//   if (!item) return false
+//   console.log(item)
+//   router.push({ name: item })
+// }
 
 </script>
 

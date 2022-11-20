@@ -43,6 +43,7 @@ defineOptions({
 }
 
 .el-main {
+  --el-main-padding: 10px;
   background-color: #ECF5FF;
 }
 </style>

@@ -104,11 +104,6 @@ const handleLinkClick = (item: ListItem, e: Event) => {
 </script>
 
 <style lang="scss" scoped>
-.is-disabled {
-  color: #c0c4cc;
-  cursor: not-allowed;
-}
-
 .menu-link,
 .link-text {
   display: block;

@@ -30,7 +30,8 @@ export const consoleRoutes: RouteRecordRaw = {
       name: 'Console',
       hidden: false,
       meta: {
-        title: '首页'
+        title: '首页',
+        requiresAuth: true
       },
       component: () => import('@/views/console/index.vue')
     }

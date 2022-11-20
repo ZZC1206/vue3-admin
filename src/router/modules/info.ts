@@ -15,7 +15,8 @@ export const infoRoutes: RouteRecordRaw = {
       name: 'newsIndex',
       hidden: false,
       meta: {
-        title: '信息列表'
+        title: '信息列表',
+        requiresAuth: true
       },
       component: () => import('@/views/info/index.vue')
     },

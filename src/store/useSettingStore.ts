@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 export const useSettingStore = defineStore('useSettingStore', {
+  persist: true,
   state: () => {
     return {
       isCollapse: false,
@@ -8,6 +9,5 @@ export const useSettingStore = defineStore('useSettingStore', {
     }
   },
   getters: {},
-  actions: { },
-  persist: true
+  actions: { }
 })
