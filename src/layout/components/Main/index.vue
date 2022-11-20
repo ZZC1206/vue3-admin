@@ -11,8 +11,10 @@ defineOptions({
 </script>
 
 <style lang="scss" scoped>
-.main-content{
+.main-content {
   background-color: #FFFFFF; // 背景色
   min-height: 100%; // 高度
+  padding: 20px;
+  @include webkit(box-sizing, border-box); // css3阴影
 }
 </style>
