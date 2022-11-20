@@ -5,66 +5,55 @@
   <hr class="spacing-hr">
   <el-row>
     <el-col :span="12">
-      <el-tree
-        :data="treeData.data"
-        :props="treeData.defaultProps"
-        default-expand-all
-        :expand-on-click-node="false"
-        @node-click="handleNodeClick"
-      >
-        <template #default="{ node }">
-          <!-- <template #default="{ node,data }"> -->
-          <el-col class="custom-tree-node">
-            <span>{{ node.label }}</span>
-            <span>
-              <el-button
-                type="info"
-                plain
-              >添加子菜单</el-button>
-              <el-button
-                type="success"
-                plain
-              >编辑</el-button>
-              <el-button
-                type="danger"
-                plain
-              >删除</el-button>
-            </span>
-          </el-col>
-        </template>
-      </el-tree>
+      <el-scrollbar :height="treeHeight">
+        <el-tree
+          :data="treeData.data"
+          :props="treeData.defaultProps"
+          default-expand-all
+          :expand-on-click-node="false"
+          @node-click="handleNodeClick"
+        >
+          <template #default="{ node }">
+            <!-- <template #default="{ node,data }"> -->
+            <el-col class="custom-tree-node">
+              <span>{{ node.label }}</span>
+              <span>
+                <el-button
+                  type="info"
+                  plain
+                >添加子菜单</el-button>
+                <el-button
+                  type="success"
+                  plain
+                >编辑</el-button>
+                <el-button
+                  type="danger"
+                  plain
+                >删除</el-button>
+              </span>
+            </el-col>
+          </template>
+        </el-tree>
+      </el-scrollbar>
     </el-col>
     <el-col :span="12">
       <div class="input-container">
         <h4 class="column">
           分类名称
         </h4>
-        <el-form>
-          <el-form-item
-            label="父级分类"
-            class="flex-center"
-          >
-            <el-input
-              placeholder="请输入"
-              size="large"
-            />
+        <el-form size="large">
+          <el-form-item label="父级分类">
+            <el-input placeholder="请输入" />
           </el-form-item>
-          <el-form-item
-            label="子级分类"
-            class="flex-center"
-          >
-            <el-input
-              placeholder="请输入"
-              size="large"
-            />
+          <el-form-item label="子级分类">
+            <el-input placeholder="请输入" />
           </el-form-item>
           <el-form-item>
             <el-button
               type="primary"
               class="el-button-block"
-              size="large"
             >
-              确认
+              确定
             </el-button>
           </el-form-item>
         </el-form>
@@ -74,7 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 defineOptions({
   name: 'Category'
@@ -141,6 +130,48 @@ const treeData = reactive({
           ]
         }
       ]
+    },
+    {
+      label: 'Level one 3',
+      children: [
+        {
+          label: 'Level two 3-1',
+          children: [
+            {
+              label: 'Level three 3-1-1'
+            }
+          ]
+        },
+        {
+          label: 'Level two 3-2',
+          children: [
+            {
+              label: 'Level three 3-2-1'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      label: 'Level one 3',
+      children: [
+        {
+          label: 'Level two 3-1',
+          children: [
+            {
+              label: 'Level three 3-1-1'
+            }
+          ]
+        },
+        {
+          label: 'Level two 3-2',
+          children: [
+            {
+              label: 'Level three 3-2-1'
+            }
+          ]
+        }
+      ]
     }
   ],
   defaultProps: {
@@ -153,6 +184,16 @@ const handleNodeClick = (data: Tree) => {
   console.log(data)
 }
 
+const clientHeight = ref('')
+// 浏览器可视区域高度
+
+onMounted(() => {
+  clientHeight.value = document.documentElement.clientHeight.toString() // 获取浏览器可视区域高度
+  console.log()
+})
+const treeHeight = computed(() => {
+  return parseInt(clientHeight.value) - 233
+})
 </script>
 
 <style lang="scss" scoped>
@@ -169,7 +210,7 @@ const handleNodeClick = (data: Tree) => {
   align-items: center;
   justify-content: space-between;
   font-size: 16px;
-  padding: 8px 8px 8px 0px;
+  padding: 8px 20px 8px 0px;
 }
 
 :deep(span.el-tree-node__label) {
@@ -188,8 +229,13 @@ const handleNodeClick = (data: Tree) => {
   border-radius: 6px;
   background-color: #f3f3f3;
 }
-.input-container{
+
+.input-container {
   width: 60%;
   margin: 0 auto;
+  position: sticky;
+  top: 113px;
+  /* 按照自己的需求设置 */
+  z-index: 3;
 }
 </style>
