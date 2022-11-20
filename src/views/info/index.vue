@@ -42,6 +42,7 @@
       <el-button
         type="success"
         class="pull-right"
+        @click="handlerCreateDetaild"
       >
         新增
       </el-button>
@@ -81,6 +82,7 @@
         <el-button
           type="danger"
           size="small"
+          @click="handlerEditDetaild"
         >
           编辑
         </el-button>
@@ -125,6 +127,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 defineOptions({
   name: 'Info'
@@ -187,7 +190,21 @@ const nextPage = () => {
   console.log('下一页')
   currenPage.value++
 }
-
+const router = useRouter()
+/** 新建跳转 */
+const handlerCreateDetaild = () => {
+  router.push({
+    name: 'NewsDetailed',
+    path: '/newsDetailed'
+  })
+}
+/** 新建跳转 */
+const handlerEditDetaild = () => {
+  router.push({
+    name: 'NewsDetailed',
+    path: '/newsDetailed'
+  })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -202,12 +219,13 @@ const nextPage = () => {
 .width-100 {
   width: 100px;
 }
-.height-50{
+
+.height-50 {
   height: 50px;
 }
 
-:deep(.page.el-pagination.is-background .el-pager li:not(.is-disabled).is-active){
-  background-color:var(--el-color-white);
+:deep(.page.el-pagination.is-background .el-pager li:not(.is-disabled).is-active) {
+  background-color: var(--el-color-white);
   color: var(--el-color-primary) !important;
   font-weight: 700;
 }
